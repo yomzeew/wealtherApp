@@ -46,20 +46,30 @@ const Downpart=(props)=>{
             {
                 weatherdata.length<1?
                 <div className='text-white text-xs'>No Record Yet</div>:
-                    weatherdata.map((items,index)=>(
+                    weatherdata.map((items,index)=>
+                        {
+                           
+                            let numberdays=index+props.day
+                            let day0index=numberdays<7 && numberdays
+                            let daysindex=numberdays===7 && 0
+                            let day2index=numberdays===8 && 1
+                            return(
+
+                        
 <div key={index} className='h-28 rounded-full w-16 border-2 border-slate-500 text-yellow-500 items-center flex justify-center'>
     <div>
     <img src={items.day.condition.icon} className='w-8 h-auto' />
-    <div className='text-xs text-slate-400'>{dayarray[index+props.day]}</div>
+    {
+
+    }
+    <div className='text-xs text-slate-400 text-center'>{dayarray[daysindex]||dayarray[day2index]||dayarray[day0index]}</div>
     <div>{items.day.avgtemp_c}&deg;</div>
     </div>
-   
-
 </div>
 
                         
 
-                    ))
+                    )})
              
 
             }
