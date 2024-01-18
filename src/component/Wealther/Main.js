@@ -102,7 +102,7 @@ try {
 
 
     return (
-        <div className="w-screen h-screen bg-slate-950">
+        <div className="w-screen h-full bg-slate-950">
             {viewlist &&<div className='absolute top-20 w-full flex justify-center'>
             <div className='absolute md:w-96 w-72 flex justify-end text-lg text-orange-200'>
                        <div onClick={()=>setviewlist(false)}><FontAwesomeIcon size="2x" icon={faTimesCircle} /></div> 
@@ -165,7 +165,7 @@ try {
 
 
             </div>
-            <div className='absolute md:-bottom-10 bottom-5 w-full'>
+            <div className='w-full'>
                 <div className='flex justify-evenly py-5'>
                     <div className="from-black to-cyan-200 bg-gradient-to-t w-16 h-28 rounded-3xl flex justify-center items-center">
                         <div className='text-center text-white'>
