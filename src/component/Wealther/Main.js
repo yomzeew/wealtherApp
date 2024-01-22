@@ -15,6 +15,11 @@ const Main = () => {
     const [uv,setuv]=useState('')
     const [icon ,seticon]=useState('')
     const [mydate,setmydate]=useState(new Date().getTime())
+    const [getvalue, setgetvalue]=useState('')
+    const [data,setdata]=useState(countrydata)
+    const [forecastdata,setforecastdata]=useState([])
+    const dayString=['Sun','Mon','Tue','Wed','Thur','Fri','Sat']
+    
     const datedays=(value)=>{
 
         const dayStringarray=['Sun','Mon','Tue','Wed','Thur','Fri','Sat']
@@ -97,6 +102,63 @@ try {
     
    },[city,country])
 
+   const handlevalue=(e)=>{
+    const value=e.target.value
+    setgetvalue(value) 
+    
+   }
+   const handleshowcountry=()=>{
+    
+    
+    const getarraycountry=countrydata.filter((item)=>{
+        const city=item.city||''
+        const country=item.country || ''
+        return(
+            city.toLowerCase().includes(getvalue.toLowerCase()) ||
+            country.toLowerCase().includes(getvalue.toLowerCase())
+            
+
+        )
+    })
+   
+    console.log(getarraycountry)
+    setdata(getarraycountry)
+   }
+   useEffect(()=>{
+    handleshowcountry()
+
+   },[getvalue])
+
+   const fetchforeall=async()=>{
+    const options = {
+        method: 'GET',
+        url: 'https://weatherapi-com.p.rapidapi.com/forecast.json',
+        params: {
+          q: city,
+          days: '3'
+        },
+        headers: {
+          'X-RapidAPI-Key': '87bd68a168msh30aa9fcf5429bcep1e29b6jsnae9732ebf2d2',
+          'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+        }
+      };
+      
+      try {
+          const response = await axios.request(options);
+          console.log(response.data.forecast.forecastday);
+          setforecastdata(response.data.forecast.forecastday)
+      } catch (error) {
+          console.error(error);
+      }
+      
+
+   }
+   useEffect(()=>{
+    fetchforeall()
+
+   },[city])
+
+
    
 
 
@@ -108,8 +170,12 @@ try {
                        <div onClick={()=>setviewlist(false)}><FontAwesomeIcon size="2x" icon={faTimesCircle} /></div> 
                     </div>
                 <div className='md:w-96 w-72 bg-slate-900 rounded-2xl h-96 px-3 overflow-y-scroll py-5'>
+                    <div className="flex justify-center z-50">
+                        <input onChange={handlevalue} className="h-8 outline-0 border rounded-lg w-72"/>
+
+                    </div>
                    
-                    {countrydata.length>0 &&countrydata.map((item,index)=>(
+                    {data.length>0 &&data.map((item,index)=>(
                     <div className='text-slate-200 text-xl text-center border-b border-slate-300 mt-3'>
                         <span onClick={()=>handleselect(item.country,item.city)} className='cursor-pointer'>{item.country} | {item.city}</span>
                     </div>))}
@@ -167,52 +233,25 @@ try {
             </div>
             <div className='w-full'>
                 <div className='flex justify-evenly py-5'>
+                   {forecastdata.length>0 &&forecastdata.map((item,index)=>( 
                     <div className="from-black to-cyan-200 bg-gradient-to-t w-16 h-28 rounded-3xl flex justify-center items-center">
                         <div className='text-center text-white'>
                             <div>
-                                <img className='w-10 h-auto object-contain' src={icon} />
+                                <img className='w-10 h-auto object-contain' src={item.day.condition.icon} />
                             </div>
                             <div className='text-xs'>
-                                20&deg;
+                                {item.day.avgtemp_c}&deg;
                             </div>
                             <div className='text-xs'>
-                                Mon
+                               { dayString[new Date(item.date_epoch *1000).getDay()]}
                             </div>
 
                         </div>
 
 
-                    </div>
-                    <div className="from-black to-orange-200 bg-gradient-to-t  w-16 h-28 rounded-3xl flex justify-center items-center">
-                        <div className='text-center text-white'>
-                            <div>
-                                <img className='w-10 h-auto object-contain' src={icon} />
-                            </div>
-                            <div className='text-xs'>
-                                20&deg;
-                            </div>
-                            <div className='text-xs'>
-                                Tue
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div className="from-black to-yellow-200 bg-gradient-to-t w-16 h-28 rounded-3xl flex justify-center items-center">
-                        <div className='text-center text-white'>
-                            <div>
-                                <img className='w-10 h-auto object-contain' src={icon} />
-                            </div>
-                            <div className='text-xs'>
-                                20&deg;
-                            </div>
-                            <div className='text-xs'>
-                                Wed
-                            </div>
-
-                        </div>
-
-                    </div>
+                    </div>))}
+                    
+                   
                 </div>
 
             </div>
